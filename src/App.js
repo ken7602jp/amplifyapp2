@@ -1,18 +1,59 @@
-import { Amplify } from 'aws-amplify';
+import React from 'react';
+import Amplify, { Auth } from "aws-amplify";
+import awsmobile from "./aws-exports";
+import { withAuthenticator } from "aws-amplify-react";
 
-import { withAuthenticator } from '@aws-amplify/ui-react';
-import '@aws-amplify/ui-react/styles.css';
+// Amplifyの設定を行う
+Amplify.configure(awsmobile)
 
-import awsExports from './aws-exports';
-Amplify.configure(awsExports);
+// SingUp時に、メールアドレスとパスワードを要求する
+const signUpConfig = {
+    header: 'Sign Up',
+    hideAllDefaults: true,
+    defaultCountyCode: '1',
+    signUpFields: [
+        {
+            label: 'User Name',
+            key: 'username',
+            required: true,
+            displayOrder: 1,
+            type: 'string'
+        },
+        {
+            label: 'Email',
+            key: 'email',
+            required: true,
+            displayOrder: 2,
+            type: 'string'
+        },
+        {
+            label: 'Password',
+            key: 'password',
+            required: true,
+            displayOrder: 3,
+            type: 'password'
+        }
+    ]
+}
 
-function App({ signOut, user }) {
+// SingOut
+function signOut(){
+  Auth.signOut()
+  .then()
+  .catch();
+}
+
+function App() {
   return (
-    <>
-      <h1>Hello {user.username}</h1>
+    <React.Fragment>
       <button onClick={signOut}>Sign out</button>
-    </>
+      <div>
+        Hello World
+      </div>
+    </React.Fragment>
   );
 }
 
-export default withAuthenticator(App);
+// Appコンポーネントをラップする
+export default withAuthenticator(App,{signUpConfig});
+
